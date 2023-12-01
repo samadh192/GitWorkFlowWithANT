@@ -6,6 +6,10 @@
     <property name="jar.dir"     value="${build.dir}/jar"/>
     <property name="main-class"  value="main.helloWorld"/>
 
+    <!-- New properties for repository and branch -->
+    <property name="git.repo" value="https://github.com/samadh192/GitWorkFlowWithANT.git"/>
+    <property name="git.branch" value="main"/>
+
     <target name="clean">
         <delete dir="${build.dir}"/>
     </target>
@@ -28,7 +32,17 @@
         <java jar="${jar.dir}/${ant.project.name}.jar" fork="true"/>
     </target>
 
-    <target name="clean-build" depends="clean,jar"/>
+    <target name="git-pull">
+        <exec executable="git" dir="${basedir}" failonerror="true">
+            <!-- Use the properties for repo and branch -->
+            <arg value="pull"/>
+            <arg value="${git.repo}"/>
+            <arg value="${git.branch}"/>
+        </exec>
+    </target>
+
+    <target name="clean-build" depends="git-pull,clean,jar"/>
+    <target name="clean-run" depends="clean-build, clean, run"/>
 
     <target name="main" depends="clean,run"/>
 
